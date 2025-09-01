@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-hover: #bc3d3d;
+  --color-icon: theme(colors.gray.500);
+  --color-textColorButton: white;
+  --color-textContrast: black;
+  --color-bgContrast: theme(colors.stone.200);
+  --color-containerContrast: theme(colors.stone.100);
+  --color-hoverContrast: theme(colors.gray.300);
+  --color-headContrast: theme(colors.gray.700);
+  --color-borderContrast: theme(colors.gray.300);
+  --color-modalContrast: white;
+  --color-inputContrast: white;
+
+  --animate-rotate-right: rotate-right 0.5s ease-in-out forwards;
+  --animate-fade-in-right: fade-in-right 200ms ease-in-out;
+  --animate-fade-out-left: fade-out-left 200ms ease-in-out;
+
+  @keyframes rotate-right {
+    0% {
+      opacity: 0;
+      transform: rotate(300deg);
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fade-in-right {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+
+  @keyframes fade-out-left {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+@layer theme {
+  .dark {
+    --color-textContrast: white;
+    --color-bgContrast: theme(colors.gray.900);
+    --color-containerContrast: theme(colors.gray.800);
+    --color-hoverContrast: theme(colors.gray.600);
+    --color-headContrast: theme(colors.gray.300);
+    --color-borderContrast: theme(colors.gray.700);
+    --color-modalContrast: black;
+    --color-inputContrast: theme(colors.gray.800);
+  }
+}
+
+body,
+input::file-selector-button {
+  transition: color 0.3s, background-color 0.3s;
+}
+
+.primaryTransition {
+  transition: all 0.3s;
+}
+
+.sidebarTransition {
+  transition: all ease-in-out 0.2s;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 5px solid var(--color-textContrast);
+  border-bottom-color: var(--color-hover);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
