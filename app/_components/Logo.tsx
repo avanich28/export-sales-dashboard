@@ -5,6 +5,8 @@ const gochiHand = Gochi_Hand({
   subsets: ["latin"],
   display: "swap",
   weight: "400",
+  // FIXME งง
+  preload: false, // Disable preloading
 });
 
 function Logo() {

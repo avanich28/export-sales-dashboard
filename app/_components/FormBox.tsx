@@ -8,7 +8,7 @@ const defaultStyles: Record<FormBoxStyles, string> = {
 };
 
 type FormBoxProps = PropsWithChildren<{
-  name: string;
+  name?: string;
   action: (formData: FormData) => void;
   type?: FormBoxStyles;
   addClassName?: string;
@@ -16,7 +16,7 @@ type FormBoxProps = PropsWithChildren<{
 
 function FormBox({
   children,
-  name,
+  name = "",
   action,
   type = "primary",
   addClassName = "",
@@ -26,9 +26,11 @@ function FormBox({
       action={action}
       className={`${defaultStyles[type]} ${addClassName} flex flex-col gap-2 px-[2vw] py-[4vh] border border-containerContrast rounded-md capitalize tracking-wide sm:tracking-wider [&>button]:ml-auto primaryTransition`}
     >
-      <h2 className="mb-1 uppercase font-semibold sm:font-bold sm:text-lg lg:text-xl">
-        {name}
-      </h2>
+      {name.length > 1 && (
+        <h2 className="mb-1 uppercase font-semibold sm:font-bold sm:text-lg lg:text-xl">
+          {name}
+        </h2>
+      )}
 
       {children}
     </form>

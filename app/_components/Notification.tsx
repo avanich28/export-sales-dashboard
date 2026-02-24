@@ -3,9 +3,9 @@
 import { IoNotifications } from "react-icons/io5";
 
 function Notification() {
-  // FIXME
   return (
     <button
+      // FIXME
       onClick={() => console.log("notification")}
       className="primaryTransition"
     >

@@ -1,8 +1,9 @@
+import { ActivePageProvider } from "@/app/_contexts/ActivePageContext";
+import { InformationProvider } from "@/app/_contexts/InformationContext";
 import { ThemeProvider } from "@/app/_contexts/ThemeContext";
 import "@/app/_styles/globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
-import { ActivePageProvider } from "./_contexts/ActivePageContext";
 
 export const metadata: Metadata = {
   title: {
@@ -23,7 +24,9 @@ export default function RootLayout({
         <Toaster position="top-center" />
 
         <ThemeProvider>
-          <ActivePageProvider>{children}</ActivePageProvider>
+          <ActivePageProvider>
+            <InformationProvider>{children}</InformationProvider>
+          </ActivePageProvider>
         </ThemeProvider>
       </body>
     </html>

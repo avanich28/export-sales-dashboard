@@ -14,6 +14,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// NOTE onDelete: Cascade ex. Products should be deleted with category
+
 model User {
   id           Int      @id @default(autoincrement())
   avatar       String?   
@@ -21,5 +23,68 @@ model User {
   password     String
   createdAt    DateTime @default(now())  
   updatedAt    DateTime @updatedAt
+}
+
+// FIXME Add updated at (for editing doc)
+model Customer {
+  id           Int       @id @default(autoincrement())
+  customerCompany String @unique
+  incoterm     String
+  portOfUnload String
+  creditTerm   String
+  currency     String
+  address      String
+  buyerName    String
+  buyerEmail   String    @unique
+  products      Product[]
+  shipments     Plan[]
+  documents     Document[]
+  contacts      Contact[]
+}
+
+model Product {
+  id           Int       @id @default(autoincrement())
+  image        String    @unique
+  code         String    @unique
+  description  String
+  currency     String
+  directExchangeRate Decimal @db.Decimal(10, 4) @default(0.0001)
+  price        Decimal @db.Decimal(10, 4) @default(0.0001)
+  customerId   Int
+  customer     Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  HSCode       String
+}
+
+model Plan {
+  id           Int       @id @default(autoincrement())
+  customerId   Int
+  customer     Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  transportationMode String @default("sea-freight")
+  POReceive    Int
+  load         Int
+  transitTime  Int
+  due          Int
+}
+
+model Document {
+  id           Int       @id @default(autoincrement())
+  customerId   Int
+  customer     Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  courier      String[]
+  email        String[]
+  driver       String[]
+}
+
+model Contact {
+  id           Int       @id @default(autoincrement())
+  customerId   Int
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  transportationMode String 
+  freight      String
+  shipping     String
+  booking      Json
+  blOrAwb      Json  
+  exportEntry  Json
+  form         Json
 }
 

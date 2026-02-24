@@ -14,7 +14,7 @@ function SidebarLinkButton({
 
   return (
     <Link
-      href={href}
+      href={"/main" + href}
       onClick={onClick}
       className={`${addClassName} ${isActive} px-4 py-[10px] sm:py-[14px] lg:py-[16px] flex items-center gap-3 sm:gap-4 lg:gap-5 rounded-sm text-sm sm:text-base lg:text-lg hover:bg-bgContrast hover:text-textContrast hover:[&>span]:text-hover primaryTransition`}
     >
@@ -22,7 +22,7 @@ function SidebarLinkButton({
         {icon}
       </span>
 
-      <div>{href === "/main/" ? "home" : href.slice(6).replace("-", " ")}</div>
+      <div>{href === "/" ? "home" : href.slice(1).replace("-", " ")}</div>
     </Link>
   );
 }

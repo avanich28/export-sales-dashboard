@@ -7,7 +7,7 @@ const defaultStyles: Record<ImageBoxStyles, string> = {
 };
 
 type ImageBoxProps = {
-  src: StaticImageData;
+  src: StaticImageData | string;
   alt: string;
   type?: ImageBoxStyles;
   addClassName?: string;
@@ -17,7 +17,6 @@ function ImageBox({
   src,
   alt,
   type = "primary",
-  // FIXME add size
   addClassName = "",
 }: ImageBoxProps) {
   return (
@@ -25,6 +24,7 @@ function ImageBox({
       src={src}
       alt={alt}
       fill
+      sizes="(max-width: 700px) 100vw,(max-width: 1024px) 70vw, 40vw"
       className={`${defaultStyles[type]} ${addClassName}`}
     />
   );

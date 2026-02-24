@@ -12,14 +12,14 @@ async function Page() {
 
   return (
     <>
-      <header className="flex items-center gap-8 sm:gap-10 lg:gap-12 mb-4 sm:mb-6 lg:mb-8">
+      <header className="flex items-center gap-8 sm:gap-10 lg:gap-12">
         <Heading>Settings</Heading>
         <Logout />
       </header>
 
-      <section className="w-full flex flex-col gap-2 sm:gap-4 lg:grid grid-cols-2">
+      <main className="w-full flex flex-col gap-2 sm:gap-4 lg:grid grid-cols-2">
         <SettingsForm userData={userData} />
-      </section>
+      </main>
     </>
   );
 }

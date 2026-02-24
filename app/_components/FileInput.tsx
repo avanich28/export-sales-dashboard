@@ -1,9 +1,10 @@
 type FileInputProps = {
   name: string;
   isPending: boolean;
+  required: boolean;
 };
 
-function FileInput({ name, isPending }: FileInputProps) {
+function FileInput({ name, isPending, required = true }: FileInputProps) {
   return (
     <input
       type="file"
@@ -12,7 +13,7 @@ function FileInput({ name, isPending }: FileInputProps) {
       disabled={isPending}
       // NOTE Add transition in CSS
       className="text-xs sm:text-sm lg:text-base tracking-wide sm:tracking-wider file:px-2 sm:file:px-3 lg:file:px-4 file:py-1 file:mr-2 sm:file:mr-4 lg:file:mr-6 file:rounded-md file:font-semibold file:text-headContrast file:uppercase  file:bg-containerContrast hover:file:bg-hover hover:file:text-textContrast"
-      required
+      required={required}
     />
   );
 }

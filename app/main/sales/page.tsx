@@ -1,13 +1,13 @@
 import Heading from "@/app/_components/Heading";
 
 export const metadata = {
-  title: "Purchase Order",
+  title: "Sales",
 };
 
 function Page() {
   return (
     <main>
-      <Heading>Purchase Order</Heading>
+      <Heading>Sales</Heading>
     </main>
   );
 }

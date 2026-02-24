@@ -9,7 +9,7 @@ function Logout() {
     <Button
       onClick={logOutAction}
       color="red"
-      addClassName="flex items-center gap-1"
+      addClassName="mb-4 sm:mb-6 lg:mb-8 flex items-center gap-1 "
     >
       <span className="text-[1.2rem]">
         <TbLogout />
