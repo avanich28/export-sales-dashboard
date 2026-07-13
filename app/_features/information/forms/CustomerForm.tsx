@@ -22,7 +22,7 @@ function CustomerForm({ isEdit = false, info = undefined }) {
     addAndUpdateCustomer,
     initialState,
   );
-  // NOTE Setting the select initial value from prop (info) when editing only
+  // NOTE Setting the select initial value from info when editing only
   const [selectInitialValue, setSelectInitialValue] = useState({
     initialIncoterm: incoterms[0],
     initialCurrency: currency[0],
@@ -39,13 +39,15 @@ function CustomerForm({ isEdit = false, info = undefined }) {
 
   useEffect(
     function () {
-      if (isEdit && state)
+      if (isEdit) {
+        const { incoterm, currency } = info;
         setSelectInitialValue({
-          initialIncoterm: info.incoterm,
-          initialCurrency: info.currency,
+          initialIncoterm: incoterm,
+          initialCurrency: currency,
         });
+      }
     },
-    [isEdit, state, info?.incoterm, info?.currency],
+    [isEdit, info],
   );
 
   return (

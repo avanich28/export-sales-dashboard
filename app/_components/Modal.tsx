@@ -53,7 +53,7 @@ function Window({ children, name, addClassName = "" }) {
         <Button
           onClick={close}
           type="closeModal"
-          color="closeModal"
+          color="none"
           addClassName="self-start mt-1 sm:text-xl lg:text-2xl"
         >
           <CgClose />

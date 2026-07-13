@@ -9,9 +9,19 @@ import {
 } from "@/app/_utils/types";
 import z from "zod";
 import { allInformationPages } from "../_features/information/constants";
-import { convertToCapitalize, getParamsWithoutId } from "../_utils/helpers";
+import {
+  convertToCapitalize,
+  getCustomerId,
+  getParamsWithoutId,
+  monthAbbrToNumber,
+} from "../_utils/helpers";
 import { auth } from "./auth";
 import { prisma } from "./prisma";
+import { months, years } from "../_utils/constants";
+import {
+  defaultOrderStatus,
+  defaultSalesSorts,
+} from "../_features/sales/constants";
 
 const informationSchema = {
   plan: planSchema,
@@ -73,7 +83,10 @@ export async function getAllCustomers(isSelect = false) {
     const customers = validateData.data;
 
     return isSelect
-      ? customers.map(({ id, customerCompany }) => `${id}-${customerCompany}`)
+      ? customers.map(
+          ({ id, customerCompany }) =>
+            `${id}-${customerCompany.toLowerCase().replace(" ", "-")}`,
+        )
       : customers;
   } catch (error) {
     // console.error(error);
@@ -81,8 +94,112 @@ export async function getAllCustomers(isSelect = false) {
   }
 }
 
-export async function getInformationData(informationId: string) {
-  const prop = getParamsWithoutId(informationId);
+export async function getAllCustomerPortOfUnloads() {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in!");
+
+  try {
+    const data = await prisma.customer.findMany();
+
+    const validateData = z
+      .array(customerSchema.extend({ id: z.number() }))
+      .safeParse(data);
+
+    if (!validateData.success)
+      throw new Error("Customer data validation failed!");
+
+    const customers = validateData.data;
+
+    return customers.map(({ id, portOfUnload }) => ({
+      id,
+      portOfUnload,
+    }));
+  } catch (error) {
+    // console.error(error);
+    throw new Error("Customer's port of unloads could not be loaded!");
+  }
+}
+
+export async function getPurchaseOrder(id) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in!");
+
+  try {
+    const data = await prisma.purchaseOrder.findFirst({
+      where: { id: Number(id) },
+      include: {
+        customer: {
+          select: {
+            customerCompany: true,
+          },
+        },
+      },
+    });
+
+    return data;
+  } catch (error) {
+    // console.error(error);
+    throw new Error("Purchase order could not be loaded!");
+  }
+}
+
+export async function getAllPurchaseOrders(
+  sort = defaultSalesSorts[0], // latest-updated
+  status = defaultOrderStatus[0], // all
+  customer = "all-customers",
+  month = months[0], // all-months
+  year = Number(years[1]),
+) {
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in!");
+
+  let where: any = {};
+  if (status !== defaultOrderStatus[0]) where.status = status;
+  if (customer !== "all-customers") where.customerId = getCustomerId(customer);
+
+  where.loading = {};
+
+  const startDate =
+    month === months[0]
+      ? new Date(year, 0, 1)
+      : new Date(year, monthAbbrToNumber(month), 1);
+  const endDate =
+    month === months[0]
+      ? new Date(year, 11, 1)
+      : new Date(year, monthAbbrToNumber(month) + 1, 1);
+
+  where.loading.gt = startDate;
+  where.loading.lte = endDate;
+
+  const sortStr = sort.split("-");
+  const order =
+    sortStr[0] === "latest" || sortStr[0] === "closest" ? "desc" : "asc";
+
+  let orderBy: any = {};
+  if (sortStr[1] === "updated") orderBy = { updatedAt: order };
+  else if (sortStr[1] === "expected") orderBy = { loading: order };
+
+  try {
+    const data = await prisma.purchaseOrder.findMany({
+      include: {
+        customer: {
+          select: {
+            customerCompany: true,
+          },
+        },
+      },
+      where: where,
+      orderBy: orderBy,
+    });
+    return data;
+  } catch (error) {
+    // console.error(error);
+    throw new Error("Purchase order data could not be loaded!");
+  }
+}
+
+export async function getInformationData(informationId: string, urlId = true) {
+  const prop = urlId ? getParamsWithoutId(informationId) : informationId;
 
   try {
     // NOTE For customer page

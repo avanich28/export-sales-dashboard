@@ -3,10 +3,15 @@
 import { allInformationPages } from "@/app/_features/information/constants";
 import {
   AUTH_ERROR_MESSAGE,
+  convertDateStringToUTC,
   SUCCESS_CREATED_DATA_MESSAGE,
   SUCCESS_DELETED_DATA_MESSAGE,
 } from "@/app/_utils/constants";
-import { convertToCapitalize, getRawData } from "@/app/_utils/helpers";
+import {
+  convertToCapitalize,
+  getCustomerId,
+  getRawData,
+} from "@/app/_utils/helpers";
 import {
   avatarSchema,
   baseUserSchema,
@@ -17,6 +22,7 @@ import {
   passwordSchema,
   planSchema,
   productSchema,
+  purchaseOrderSchema,
   userSchema,
 } from "@/app/_utils/types";
 import bcrypt from "bcryptjs";
@@ -25,10 +31,6 @@ import { redirect } from "next/navigation";
 import { auth, signIn, signOut } from "./auth";
 import { prisma } from "./prisma";
 import { supabase } from "./supabase";
-
-function getCustomerId(customer: string): number {
-  return Number(customer.split("-")[0]);
-}
 
 async function isUsernameExist(name: string): Promise<boolean> {
   try {
@@ -657,11 +659,7 @@ export async function addAndUpdateShipmentContact(
   return { error: false, message: SUCCESS_CREATED_DATA_MESSAGE };
 }
 
-export async function deleteItem(
-  modelName: string,
-  id: number,
-  informationId: string,
-) {
+export async function deleteItem(modelName: string, id: number, path: string) {
   // 1) Authentication
   const session = await auth();
   if (!session) throw new Error(AUTH_ERROR_MESSAGE);
@@ -682,7 +680,72 @@ export async function deleteItem(
   }
 
   // 5) Reload
-  revalidatePath(`/main/information/${informationId}`);
+  revalidatePath(`/main${path}`);
   // NOTE Send to handleDeleteClick
   return { error: false, message: SUCCESS_DELETED_DATA_MESSAGE };
+}
+
+export async function addAndUpdatePurchaseOrder(
+  prevState: FormError,
+  formData: FormData,
+): Promise<FormError> {
+  // 1) Authentication
+  const session = await auth();
+  if (!session) throw new Error(AUTH_ERROR_MESSAGE);
+
+  // 2) Validate Data
+  const rawData = getRawData(formData);
+  const validateData = purchaseOrderSchema.safeParse(rawData);
+
+  if (!validateData.success)
+    return { error: true, message: "Validation failed!" };
+
+  const {
+    purchaseOrderNumber,
+    customer,
+    portOfUnload,
+    status,
+    loading,
+    ETA,
+    note,
+    itemList,
+  } = validateData.data;
+
+  const customerId = getCustomerId(customer);
+
+  // 3) Check item id for edit
+  const purchaseOrderId = Number(formData.get("purchaseOrderId")) || undefined;
+
+  const data = {
+    purchaseOrderNumber,
+    customerId,
+    portOfUnload,
+    status,
+    loading: convertDateStringToUTC(loading),
+    ETA: convertDateStringToUTC(ETA),
+    note,
+    items: itemList,
+  };
+
+  try {
+    // 4) Create or update data
+    if (purchaseOrderId > 0)
+      await prisma.purchaseOrder.update({
+        where: { id: purchaseOrderId },
+        data,
+      });
+    else await prisma.purchaseOrder.create({ data });
+  } catch (error) {
+    console.error(error);
+    console.error(error.stack);
+    // 5) Error Handling
+    return {
+      error: true,
+      message: `Purchase order could not be ${purchaseOrderId ? "updated" : "created"}!`,
+    };
+  }
+
+  // 6) Reload
+  revalidatePath(`/main/sales/add-order`);
+  return { error: false, message: SUCCESS_CREATED_DATA_MESSAGE };
 }

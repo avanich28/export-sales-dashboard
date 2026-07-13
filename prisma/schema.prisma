@@ -22,24 +22,27 @@ model User {
   name         String   @unique
   password     String
   createdAt    DateTime @default(now())  
-  updatedAt    DateTime @updatedAt
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 // FIXME Add updated at (for editing doc)
 model Customer {
   id           Int       @id @default(autoincrement())
   customerCompany String @unique
-  incoterm     String
-  portOfUnload String
-  creditTerm   String
-  currency     String
-  address      String
-  buyerName    String
-  buyerEmail   String    @unique
-  products      Product[]
-  shipments     Plan[]
-  documents     Document[]
-  contacts      Contact[]
+  incoterm       String
+  portOfUnload   String
+  creditTerm     String
+  currency       String
+  address        String
+  buyerName      String
+  buyerEmail     String    @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  products       Product[]
+  shipments      Plan[]
+  documents      Document[]
+  contacts       Contact[]
+  purchaseOrders PurchaseOrder[]
 }
 
 model Product {
@@ -53,6 +56,8 @@ model Product {
   customerId   Int
   customer     Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   HSCode       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model Plan {
@@ -64,6 +69,8 @@ model Plan {
   load         Int
   transitTime  Int
   due          Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model Document {
@@ -73,6 +80,8 @@ model Document {
   courier      String[]
   email        String[]
   driver       String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
 model Contact {
@@ -86,5 +95,21 @@ model Contact {
   blOrAwb      Json  
   exportEntry  Json
   form         Json
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 }
 
+model PurchaseOrder {
+  id                  Int       @id @default(autoincrement())
+  purchaseOrderNumber String
+  customerId          Int
+  customer            Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  portOfUnload        String
+  status              String
+  loading             DateTime @db.Date @default(now())
+  ETA                 DateTime @db.Date @default(now())
+  note                String
+  items               Json
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @default(now()) @updatedAt
+}

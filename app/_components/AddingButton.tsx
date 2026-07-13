@@ -5,7 +5,7 @@ function AddingButton({ onClick }) {
     <Button
       btnType="button"
       color="green"
-      addClassName="ml-auto self-center"
+      addClassName="ml-auto self-center active:scale-[0.96]"
       onClick={onClick}
     >
       + Add

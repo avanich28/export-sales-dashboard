@@ -7,7 +7,11 @@ import Input from "@/app/_components/Input";
 import Select from "@/app/_components/Select";
 import SubmitButton from "@/app/_components/SubmitButton";
 import { addAndUpdateProduct } from "@/app/_lib/actions";
-import { submitButtonMessage, triggerToast } from "@/app/_utils/helpers";
+import {
+  convertCustomerSelectValueStr,
+  submitButtonMessage,
+  triggerToast,
+} from "@/app/_utils/helpers";
 import { FormError } from "@/app/_utils/types";
 import { useActionState, useEffect, useState } from "react";
 import { currency } from "../constants";
@@ -38,13 +42,18 @@ function ProductForm({ customers, isEdit = false, info = undefined }) {
 
   useEffect(
     function () {
-      if (isEdit && state)
+      if (isEdit) {
+        const { customerId, customer, currency } = info;
         setSelectInitialValue({
-          initialCustomer: `${info.customerId}-${info.customer.customerCompany}`,
-          initialCurrency: info.currency,
+          initialCustomer: convertCustomerSelectValueStr(
+            customerId,
+            customer.customerCompany,
+          ),
+          initialCurrency: currency,
         });
+      }
     },
-    [isEdit, state, info?.customerId, info?.customerCompany, info?.currency],
+    [isEdit, info],
   );
 
   return (
@@ -86,7 +95,7 @@ function ProductForm({ customers, isEdit = false, info = undefined }) {
       </FormRow>
       <FormRow label="customer">
         <Select
-          key={"customer" + initialCustomer + initialCurrency}
+          key={initialCustomer}
           name="customer"
           value={initialCustomer}
           onChange={(e) =>
@@ -112,7 +121,7 @@ function ProductForm({ customers, isEdit = false, info = undefined }) {
       </FormRow>
       <FormRow label="currency">
         <Select
-          key={"currency" + initialCustomer + initialCurrency}
+          key={initialCurrency}
           name="currency"
           data={currency}
           value={initialCurrency}

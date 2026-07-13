@@ -10,13 +10,13 @@ async function Layout({ children }: { children: React.ReactNode }) {
   const customers = await getAllCustomers(true);
 
   return (
-    <div className="h-full flex flex-col gap-3">
+    <main className="h-full flex flex-col gap-3">
       <header>
         <Heading>Information</Heading>
         <InformationOperation customers={customers} />
       </header>
       {children}
-    </div>
+    </main>
   );
 }
 

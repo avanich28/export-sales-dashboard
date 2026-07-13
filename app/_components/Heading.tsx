@@ -1,6 +1,6 @@
 const defaultStyles = {
   primary:
-    "uppercase font-semibold sm:font-bold text-2xl sm:text-3xl lg:text-4xl tracking-wide sm:tracking-wider mb-4 sm:mb-6 lg:mb-8",
+    "uppercase font-semibold sm:font-bold text-xl sm:text-2xl lg:text-3xl tracking-wide sm:tracking-wider mb-4 sm:mb-6 lg:mb-8",
 };
 
 function Heading({ children, type = "primary", addClassName = "" }) {

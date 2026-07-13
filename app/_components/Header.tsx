@@ -10,7 +10,7 @@ async function Header() {
   const { name, avatar } = await getUserData();
 
   return (
-    <header className="sticky top-0 z-10 sm:relative bg-containerContrast text-headContrast py-3 sm:py-2 px-4 border-b border-borderContrast flex items-center justify-between sm:justify-end gap-6 capitalize text-xl sm:text-2xl lg:text-3xl primaryTransition">
+    <header className="sticky z-10 top-0 sm:relative bg-containerContrast text-headContrast py-3 sm:py-2 px-4 border-b border-borderContrast flex items-center justify-between sm:justify-end gap-6 capitalize text-xl sm:text-2xl lg:text-3xl primaryTransition">
       <DropDown />
       <MiniLogo />
 

@@ -2,9 +2,10 @@ import { type PropsWithChildren } from "react";
 
 type TableProps = PropsWithChildren<{
   header: string[];
+  hasKebab: boolean;
 }>;
 
-function Table({ children, header }: TableProps) {
+function Table({ children, header, hasKebab = true }: TableProps) {
   return (
     <main className="relative w-full h-full rounded-md overflow-auto">
       <table className="absolute w-full max-w-full table-auto tracking-wide sm:tracking-wider">
@@ -13,8 +14,8 @@ function Table({ children, header }: TableProps) {
             {header?.map((word) => (
               <th key={word}>{word}</th>
             ))}
-            {/* NOTE For Kebab Menu */}
-            <th></th>
+
+            {hasKebab && <th></th>}
           </tr>
         </thead>
         <tbody className="[&>*]:h-[40px] [&>*]:sm:h-[50px] [&>*]:lg:h-[58px] capitalize">

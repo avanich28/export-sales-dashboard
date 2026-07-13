@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo } from "react";
 
 type SelectStyles = "primary" | "secondary";
 

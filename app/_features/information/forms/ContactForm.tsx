@@ -9,6 +9,7 @@ import SubmitButton from "@/app/_components/SubmitButton";
 
 import { addAndUpdateShipmentContact } from "@/app/_lib/actions";
 import {
+  convertCustomerSelectValueStr,
   splitCamelCase,
   submitButtonMessage,
   triggerToast,
@@ -42,19 +43,18 @@ function ContactForm({ customers, isEdit = false, info = undefined }) {
 
   useEffect(
     function () {
-      if (isEdit && state)
+      if (isEdit) {
+        const { customerId, customer, transportationMode } = info;
         setSelectInitialValue({
-          initialCustomer: `${info.customerId}-${info.customer.customerCompany}`,
-          initialTransportationMode: info.transportationMode,
+          initialCustomer: convertCustomerSelectValueStr(
+            customerId,
+            customer.customerCompany,
+          ),
+          initialTransportationMode: transportationMode,
         });
+      }
     },
-    [
-      isEdit,
-      state,
-      info?.customerId,
-      info?.customer.customerCompany,
-      info?.transportationMode,
-    ],
+    [isEdit, info],
   );
 
   return (

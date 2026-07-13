@@ -118,3 +118,14 @@ export const contactSchema = z.object({
   formEmail: z.string(),
   formTel: z.string(),
 });
+
+export const purchaseOrderSchema = z.object({
+  purchaseOrderNumber: z.string(),
+  customer: z.string(),
+  portOfUnload: z.string(),
+  status: z.string(),
+  loading: z.string(),
+  ETA: z.string(),
+  note: z.string(),
+  itemList: z.string(),
+});

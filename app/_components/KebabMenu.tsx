@@ -1,25 +1,24 @@
+"use client";
+
 import { useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { HiDotsVertical } from "react-icons/hi";
-import { HiTrash } from "react-icons/hi2";
-import EditItemModal from "../_features/information/EditItemModal";
 import { useOutsideClick } from "../_hooks/useOutsideClick";
-import { deleteItem } from "../_lib/actions";
-import { getParamsWithoutId, triggerToast } from "../_utils/helpers";
-import Button from "./Button";
+import DeleteButton from "./DeleteButton";
+import EditButton from "./EditButton";
+import LinkButton from "./LinkButton";
 import Modal from "./Modal";
 
-function KebabMenu({ informationId, info, customers }) {
+function KebabMenu({
+  children,
+  opens = "",
+  href = "",
+  handleDelete,
+  hasModal = true,
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const ref = useOutsideClick(() => setIsOpen(false));
-
-  async function handleDeleteClick() {
-    const modelName = getParamsWithoutId(informationId);
-    const id = info.id;
-
-    const { error, message } = await deleteItem(modelName, id, informationId);
-    triggerToast(error, message);
-  }
+  // NOTE Close listenCapturing -> close both kebab and edit modal
+  const ref = useOutsideClick(() => setIsOpen(false), false);
 
   return (
     <Modal>
@@ -28,34 +27,28 @@ function KebabMenu({ informationId, info, customers }) {
           <HiDotsVertical />
         </button>
         {isOpen && (
-          <div className="absolute flex flex-col gap-2 p-2 right-0 rounded-sm bg-containerContrast border border-borderContrast">
-            <Modal.Open opens="informationEditForm">
-              <Button btnType="button" type="secondary" color="secondary">
+          <div className="z-10 absolute flex flex-col gap-2 p-2 right-0 rounded-sm bg-containerContrast border border-borderContrast">
+            {hasModal && (
+              <Modal.Open opens={opens}>
+                <EditButton />
+              </Modal.Open>
+            )}
+
+            {!hasModal && (
+              <LinkButton href={href} type="tertiary" color="secondary">
                 <span>
                   <FaEdit />
                 </span>
                 <span>Edit</span>
-              </Button>
-            </Modal.Open>
-            <Button
-              btnType="button"
-              type="secondary"
-              color="secondary"
-              onClick={handleDeleteClick}
-            >
-              <span>
-                <HiTrash />
-              </span>
-              <span>Delete</span>
-            </Button>
+              </LinkButton>
+            )}
+
+            <DeleteButton onClick={handleDelete} />
           </div>
         )}
       </div>
-      <EditItemModal
-        curInformation={getParamsWithoutId(informationId)}
-        info={info}
-        customers={customers}
-      />
+      {/* NOTE For edit modal */}
+      {hasModal && children}
     </Modal>
   );
 }

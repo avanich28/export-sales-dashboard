@@ -68,7 +68,7 @@ function InformationOperation({ customers }) {
         )}
         <Modal>
           <Modal.Open opens="informationForm">
-            {/* FIXME */}
+            {/* FIXME onClick? */}
             <AddingButton />
           </Modal.Open>
           <AddItemModal curInformation={curInformation} customers={customers} />

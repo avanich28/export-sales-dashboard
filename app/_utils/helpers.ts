@@ -33,7 +33,24 @@ export function submitButtonMessage(isEdit) {
 }
 
 export function triggerToast(error, message) {
-  if (error && message) toast.error(message);
+  if (error && message) toast?.error(message);
 
-  if (!error && message) toast.success(message);
+  if (!error && message) toast?.success(message);
+}
+
+export function getCustomerId(customer: string): number {
+  return Number(customer.split("-")[0]);
+}
+
+export function monthAbbrToNumber(monthAbbr = "mar") {
+  const date = new Date(`${monthAbbr} 1, 2026`);
+  return date.getMonth();
+}
+
+export function convertFullDateToYYYYMMDD(date) {
+  return date.toLocaleDateString("en-CA");
+}
+
+export function convertCustomerSelectValueStr(id, company) {
+  return `${id}-${company.toLowerCase().split(" ").join("-")}`;
 }

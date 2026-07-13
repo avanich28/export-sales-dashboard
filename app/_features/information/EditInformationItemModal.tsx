@@ -1,8 +1,7 @@
 import Modal from "@/app/_components/Modal";
 import { allInformationPages, informationDefault } from "./constants";
-import CustomerForm from "./forms/CustomerForm";
 
-function EditItemModal({ curInformation, info, customers }) {
+function EditInformationItemModal({ curInformation, info, customers }) {
   return (
     <Modal.Window name="informationEditForm">
       {curInformation === allInformationPages[0]
@@ -13,4 +12,4 @@ function EditItemModal({ curInformation, info, customers }) {
   );
 }
 
-export default EditItemModal;
+export default EditInformationItemModal;

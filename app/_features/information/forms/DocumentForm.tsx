@@ -6,7 +6,11 @@ import Input from "@/app/_components/Input";
 import Select from "@/app/_components/Select";
 import SubmitButton from "@/app/_components/SubmitButton";
 import { addAndUpdateDocument } from "@/app/_lib/actions";
-import { submitButtonMessage, triggerToast } from "@/app/_utils/helpers";
+import {
+  convertCustomerSelectValueStr,
+  submitButtonMessage,
+  triggerToast,
+} from "@/app/_utils/helpers";
 import { FormError } from "@/app/_utils/types";
 import { useActionState, useEffect, useState } from "react";
 
@@ -39,12 +43,17 @@ function DocumentForm({ customers, isEdit = false, info = undefined }) {
 
   useEffect(
     function () {
-      if (isEdit && state)
+      if (isEdit) {
+        const { customerId, customer } = info;
         setSelectInitialValue({
-          initialCustomer: `${info.customerId}-${info.customer.customerCompany}`,
+          initialCustomer: convertCustomerSelectValueStr(
+            customerId,
+            customer.customerCompany,
+          ),
         });
+      }
     },
-    [isEdit, state, info?.customerId, info?.customer.customerCompany],
+    [isEdit, info],
   );
 
   return (
