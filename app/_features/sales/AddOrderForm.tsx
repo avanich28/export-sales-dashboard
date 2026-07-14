@@ -18,7 +18,7 @@ import {
   triggerToast,
 } from "@/app/_utils/helpers";
 import { FormError } from "@/app/_utils/types";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { HiMinusCircle } from "react-icons/hi2";
 import { IoIosAddCircle } from "react-icons/io";
 import { defaultOrderStatus, itemListHeader } from "./constants";
@@ -38,6 +38,7 @@ function AddOrderForm({
     addAndUpdatePurchaseOrder,
     initialState,
   );
+  const [isPendingTransition, startTransition] = useTransition();
   const [purchaseOrderNumber, setPurchaseOrderNumber] = useState("");
   const [selectInitialValue, setSelectInitialValue] = useState({
     initialCustomer: customers[0],
@@ -207,7 +208,8 @@ function AddOrderForm({
 
     const formData = new FormData(e.currentTarget);
     formData.append("itemList", JSON.stringify(itemList));
-    formAction(formData);
+
+    startTransition(() => formAction(formData));
 
     if (!isEdit) handleReset();
   }
@@ -218,7 +220,6 @@ function AddOrderForm({
         <Input
           name="purchaseOrderId"
           type="hidden"
-          isPending={isPending}
           defaultValue={Number(info.id)}
         />
       )}
@@ -232,7 +233,7 @@ function AddOrderForm({
                 value={purchaseOrderNumber}
                 setValue={setPurchaseOrderNumber}
                 name="purchaseOrderNumber"
-                isPending={isPending}
+                isPending={isPending || isPendingTransition}
               />
             </FormRow>
             <FormRow label="customer">
@@ -247,8 +248,10 @@ function AddOrderForm({
                     initialCustomer: e.target.value,
                   })
                 }
-                addClassName={isPending ? "pointer-events-none" : ""}
-                isPending={isPending}
+                addClassName={
+                  isPending || isPendingTransition ? "pointer-events-none" : ""
+                }
+                isPending={isPending || isPendingTransition}
               />
             </FormRow>
             <FormRow label="port of unload">
@@ -257,7 +260,7 @@ function AddOrderForm({
                 name="portOfUnload"
                 value={portOfUnload}
                 setValue={setPortOfUnload}
-                isPending={isPending}
+                isPending={isPending || isPendingTransition}
               />
             </FormRow>
             <FormRow label="status">
@@ -272,7 +275,9 @@ function AddOrderForm({
                     initialStatus: e.target.value,
                   })
                 }
-                addClassName={isPending ? "pointer-events-none" : ""}
+                addClassName={
+                  isPending || isPendingTransition ? "pointer-events-none" : ""
+                }
               />
             </FormRow>
             <div className="flex gap-1 sm:gap-2">
@@ -298,7 +303,7 @@ function AddOrderForm({
                 setValue={setNote}
                 name="note"
                 placeholder="Enter the PO revision number..."
-                isPending={isPending}
+                isPending={isPending || isPendingTransition}
               />
             </FormRow>
           </InputField>
@@ -325,14 +330,14 @@ function AddOrderForm({
                       value={itemQuantity}
                       onChange={(e) => setItemQuantity(Number(e.target.value))}
                       min={1}
-                      disabled={isPending}
+                      disabled={isPending || isPendingTransition}
                       className="w-full px-2 py-1 bg-inputContrast rounded-md primaryTransition"
                     />
                     <Button
                       btnType="button"
                       color="green"
                       onClick={addItem}
-                      addClassName={`ml-auto ${isPending ? "pointer-events-none" : ""}`}
+                      addClassName={`ml-auto ${isPending || isPendingTransition ? "pointer-events-none" : ""}`}
                     >
                       +
                     </Button>
@@ -378,7 +383,7 @@ function AddOrderForm({
           <LinkButton
             color="blue"
             href="/main/sales"
-            addClassName={`tracking-wide sm:tracking-wider inline-block ${isPending ? "pointer-events-none" : ""}`}
+            addClassName={`tracking-wide sm:tracking-wider inline-block ${isPending || isPendingTransition ? "pointer-events-none" : ""}`}
           >
             Go back
           </LinkButton>
@@ -387,12 +392,16 @@ function AddOrderForm({
               btnType="button"
               color="green"
               onClick={handleReset}
-              addClassName={isPending ? "pointer-events-none" : ""}
+              addClassName={
+                isPending || isPendingTransition ? "pointer-events-none" : ""
+              }
             >
               Reset
             </Button>
           )}
-          <SubmitButton>{isEdit ? "Edit" : "Submit"}</SubmitButton>
+          <SubmitButton pendingLabel={isEdit ? "...editing" : "...submitting"}>
+            {isEdit ? "Edit" : "Submit"}
+          </SubmitButton>
         </div>
       </div>
     </form>

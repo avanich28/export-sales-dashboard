@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { convertFullDateToYYYYMMDD } from "../_utils/helpers";
 
 function DateInput({ name, value, onChange, isPending }) {
   const dateInputRef = useRef<HTMLInputElement>(null);
@@ -12,6 +13,7 @@ function DateInput({ name, value, onChange, isPending }) {
       <input
         ref={dateInputRef}
         type="date"
+        min={convertFullDateToYYYYMMDD(new Date())}
         name={name}
         value={value}
         onChange={(e) => onChange(e.target.value)}

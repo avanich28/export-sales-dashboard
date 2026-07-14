@@ -11,7 +11,7 @@
   --color-hoverContrast: theme(colors.gray.300);
   --color-headContrast: theme(colors.gray.700);
   --color-borderContrast: theme(colors.stone.300);
-  --color-modalContrast: rgba(255, 255, 255, 0.788);
+  --color-modalContrast: rgba(255, 255, 255, 0.932);
   --color-inputContrast: white;
 
   --animate-rotate-right: rotate-right 0.5s ease-in-out forwards;
@@ -56,14 +56,16 @@
     --color-hoverContrast: theme(colors.gray.600);
     --color-headContrast: theme(colors.gray.300);
     --color-borderContrast: theme(colors.gray.700);
-    --color-modalContrast: rgba(0, 0, 0, 0.805);
+    --color-modalContrast: rgba(0, 0, 0, 0.932);
     --color-inputContrast: theme(colors.gray.800);
   }
 }
 
 body,
 input::file-selector-button {
-  transition: color 0.3s, background-color 0.3s;
+  transition:
+    color 0.3s,
+    background-color 0.3s;
 }
 
 th,
