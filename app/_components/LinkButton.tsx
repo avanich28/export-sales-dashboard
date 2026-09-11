@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { type PropsWithChildren } from "react";
 
-type LinkButtonStyles = "primary" | "secondary" | "tertiary";
+type LinkButtonStyles = "primary" | "secondary" | "tertiary" | "iconButton";
 type LinkButtonColors = "primary" | "secondary" | "green" | "blue";
 
 const defaultStyles: Record<LinkButtonStyles, string> = {
@@ -10,6 +10,8 @@ const defaultStyles: Record<LinkButtonStyles, string> = {
   secondary:
     "w-full uppercase text-center tracking-wider font-semibold sm:font-bold text-xs sm:text-sm lg:text-base whitespace-nowrap p-1",
   tertiary: "flex items-center gap-3",
+  iconButton:
+    "p-1 sm:p-2 rounded-md text-sm sm:text-base lg:text-lg border border-borderContrast",
 };
 
 const defaultColors: Record<LinkButtonColors, string> = {

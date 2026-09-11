@@ -10,6 +10,11 @@ import {
 import z from "zod";
 import { allInformationPages } from "../_features/information/constants";
 import {
+  defaultOrderStatus,
+  defaultSalesSorts,
+} from "../_features/sales/constants";
+import { months, years } from "../_utils/constants";
+import {
   convertToCapitalize,
   getCustomerId,
   getParamsWithoutId,
@@ -17,11 +22,6 @@ import {
 } from "../_utils/helpers";
 import { auth } from "./auth";
 import { prisma } from "./prisma";
-import { months, years } from "../_utils/constants";
-import {
-  defaultOrderStatus,
-  defaultSalesSorts,
-} from "../_features/sales/constants";
 
 const informationSchema = {
   plan: planSchema,
@@ -130,6 +130,7 @@ export async function getPurchaseOrder(id) {
       include: {
         customer: {
           select: {
+            id: true,
             customerCompany: true,
           },
         },
@@ -173,11 +174,11 @@ export async function getAllPurchaseOrders(
 
   const sortStr = sort.split("-");
   const order =
-    sortStr[0] === "latest" || sortStr[0] === "closest" ? "desc" : "asc";
+    sortStr[0] === "latest" || sortStr[0] === "farthest" ? "desc" : "asc";
 
   let orderBy: any = {};
   if (sortStr[1] === "updated") orderBy = { updatedAt: order };
-  else if (sortStr[1] === "expected") orderBy = { loading: order };
+  else if (sortStr[1] === "loading") orderBy = { loading: order };
 
   try {
     const data = await prisma.purchaseOrder.findMany({

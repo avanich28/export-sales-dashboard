@@ -34,11 +34,11 @@ function AddOrderForm({
   isEdit = false,
   info = undefined,
 }) {
-  const [state, formAction, isPending] = useActionState(
+  const [state, formAction] = useActionState(
     addAndUpdatePurchaseOrder,
     initialState,
   );
-  const [isPendingTransition, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
   const [purchaseOrderNumber, setPurchaseOrderNumber] = useState("");
   const [selectInitialValue, setSelectInitialValue] = useState({
     initialCustomer: customers[0],
@@ -53,6 +53,7 @@ function AddOrderForm({
   const [loading, setLoading] = useState("");
   const [expectedArrival, setExpectedArrival] = useState("");
 
+  const [rev, setRev] = useState("00");
   const [note, setNote] = useState("");
 
   const [item, setItem] = useState(null);
@@ -83,6 +84,7 @@ function AddOrderForm({
           status,
           loading,
           ETA,
+          rev,
           note,
           items,
         } = info;
@@ -100,6 +102,7 @@ function AddOrderForm({
         setLoading(convertFullDateToYYYYMMDD(loading));
         setExpectedArrival(convertFullDateToYYYYMMDD(ETA));
 
+        setRev(rev);
         setNote(note);
 
         setItemList(JSON.parse(items));
@@ -233,7 +236,7 @@ function AddOrderForm({
                 value={purchaseOrderNumber}
                 setValue={setPurchaseOrderNumber}
                 name="purchaseOrderNumber"
-                isPending={isPending || isPendingTransition}
+                isPending={isPending}
               />
             </FormRow>
             <FormRow label="customer">
@@ -248,10 +251,8 @@ function AddOrderForm({
                     initialCustomer: e.target.value,
                   })
                 }
-                addClassName={
-                  isPending || isPendingTransition ? "pointer-events-none" : ""
-                }
-                isPending={isPending || isPendingTransition}
+                addClassName={isPending ? "pointer-events-none" : ""}
+                isPending={isPending}
               />
             </FormRow>
             <FormRow label="port of unload">
@@ -260,7 +261,7 @@ function AddOrderForm({
                 name="portOfUnload"
                 value={portOfUnload}
                 setValue={setPortOfUnload}
-                isPending={isPending || isPendingTransition}
+                isPending={isPending}
               />
             </FormRow>
             <FormRow label="status">
@@ -275,9 +276,7 @@ function AddOrderForm({
                     initialStatus: e.target.value,
                   })
                 }
-                addClassName={
-                  isPending || isPendingTransition ? "pointer-events-none" : ""
-                }
+                addClassName={isPending ? "pointer-events-none" : ""}
               />
             </FormRow>
             <div className="flex gap-1 sm:gap-2">
@@ -286,6 +285,7 @@ function AddOrderForm({
                   name="loading"
                   value={loading}
                   onChange={setLoading}
+                  isPending={isPending}
                 />
               </FormRow>
               <FormRow label="ETA">
@@ -293,19 +293,31 @@ function AddOrderForm({
                   name="ETA"
                   value={expectedArrival}
                   onChange={setExpectedArrival}
+                  isPending={isPending}
                 />
               </FormRow>
             </div>
-            <FormRow label="note">
-              <Input
-                hasState={true}
-                value={note}
-                setValue={setNote}
-                name="note"
-                placeholder="Enter the PO revision number..."
-                isPending={isPending || isPendingTransition}
-              />
-            </FormRow>
+            <div className="flex gap-1 sm:gap-2">
+              <FormRow label="rev">
+                <Input
+                  hasState={true}
+                  value={rev}
+                  setValue={setRev}
+                  name="rev"
+                  placeholder="Enter the PO revision..."
+                  isPending={isPending}
+                />
+              </FormRow>
+              <FormRow label="note">
+                <Input
+                  hasState={true}
+                  value={note}
+                  setValue={setNote}
+                  name="note"
+                  isPending={isPending}
+                />
+              </FormRow>
+            </div>
           </InputField>
         </div>
 
@@ -330,14 +342,14 @@ function AddOrderForm({
                       value={itemQuantity}
                       onChange={(e) => setItemQuantity(Number(e.target.value))}
                       min={1}
-                      disabled={isPending || isPendingTransition}
+                      disabled={isPending}
                       className="w-full px-2 py-1 bg-inputContrast rounded-md primaryTransition"
                     />
                     <Button
                       btnType="button"
                       color="green"
                       onClick={addItem}
-                      addClassName={`ml-auto ${isPending || isPendingTransition ? "pointer-events-none" : ""}`}
+                      addClassName={`ml-auto ${isPending ? "pointer-events-none" : ""}`}
                     >
                       +
                     </Button>
@@ -383,7 +395,7 @@ function AddOrderForm({
           <LinkButton
             color="blue"
             href="/main/sales"
-            addClassName={`tracking-wide sm:tracking-wider inline-block ${isPending || isPendingTransition ? "pointer-events-none" : ""}`}
+            addClassName={`tracking-wide sm:tracking-wider inline-block ${isPending ? "pointer-events-none" : ""}`}
           >
             Go back
           </LinkButton>
@@ -392,9 +404,7 @@ function AddOrderForm({
               btnType="button"
               color="green"
               onClick={handleReset}
-              addClassName={
-                isPending || isPendingTransition ? "pointer-events-none" : ""
-              }
+              addClassName={isPending ? "pointer-events-none" : ""}
             >
               Reset
             </Button>

@@ -7,11 +7,15 @@ function Layout({ children }) {
       <div className="hidden sm:contents">
         <Sidebar />
       </div>
-      <div className="h-screen w-full min-w-max flex flex-col">
-        <Header />
-        <main className="h-full sm:overflow-auto pt-6 sm:pt-8 lg:pt-10 pb-4 px-4">
-          {children}
-        </main>
+      <div className="min-w-0 h-screen">
+        <div className="min-w-full h-full sm:overflow-auto">
+          <div className="min-w-max h-full flex flex-col">
+            <Header />
+            <main className="h-full min-h-max pt-6 sm:pt-8 lg:pt-10 pb-4 px-4">
+              {children}
+            </main>
+          </div>
+        </div>
       </div>
     </div>
   );

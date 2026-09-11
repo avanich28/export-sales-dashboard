@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
 import { HiDotsVertical } from "react-icons/hi";
 import { useOutsideClick } from "../_hooks/useOutsideClick";
 import DeleteButton from "./DeleteButton";
@@ -37,7 +37,7 @@ function KebabMenu({
             {!hasModal && (
               <LinkButton href={href} type="tertiary" color="secondary">
                 <span>
-                  <FaEdit />
+                  <AiFillEdit />
                 </span>
                 <span>Edit</span>
               </LinkButton>

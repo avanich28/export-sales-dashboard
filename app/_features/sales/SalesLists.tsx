@@ -4,7 +4,7 @@ import { getAllPurchaseOrders } from "@/app/_lib/data-services";
 import { salesHeader } from "./constants";
 import SalesItem from "./SalesItem";
 
-async function SalesLists({ customers, query }) {
+async function SalesLists({ query }) {
   const { status, sort, customer, month, year } = query;
 
   const purchaseOrders = await getAllPurchaseOrders(
@@ -19,7 +19,7 @@ async function SalesLists({ customers, query }) {
     <Table header={salesHeader}>
       {purchaseOrders.map((order) => (
         <TableRow key={order.id}>
-          <SalesItem customers={customers} order={order} />
+          <SalesItem order={order} />
         </TableRow>
       ))}
     </Table>

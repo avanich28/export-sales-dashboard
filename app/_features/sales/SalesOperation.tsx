@@ -5,8 +5,8 @@ import Container from "@/app/_components/Container";
 import LinkButton from "@/app/_components/LinkButton";
 import Select from "@/app/_components/Select";
 import { months, years } from "@/app/_utils/constants";
+import { createQueryString } from "@/app/_utils/helpers";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
 import { LuListFilter } from "react-icons/lu";
 import { defaultOrderStatus, defaultSalesSorts } from "./constants";
 
@@ -21,28 +21,9 @@ function SalesOperation({ customers }) {
   const curMonth = searchParams.get("month") || months[0];
   const curYear = searchParams.get("year") || years[1];
 
-  const createQueryString = useCallback(
-    function (name: string, value: string): string {
-      // Current params
-      const params = new URLSearchParams(searchParams.toString());
-      // Change to obj
-      const queries = {
-        ...Object.fromEntries(params.entries()),
-        [name]: value,
-      };
-
-      Object.entries(queries).forEach(([key, value]) => {
-        if (value === null) params.delete(key);
-        else params.set(key, value);
-      });
-
-      router.push(pathname + "?" + params.toString());
-    },
-    [pathname, searchParams],
-  );
-
-  function onChangeQuery(query, value) {
-    createQueryString(query, value);
+  function onChangeQuery(name, value) {
+    const queryString = createQueryString(searchParams, name, value);
+    router.push(pathname + "?" + queryString);
   }
 
   return (

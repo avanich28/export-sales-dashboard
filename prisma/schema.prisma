@@ -108,7 +108,8 @@ model PurchaseOrder {
   status              String
   loading             DateTime @db.Date @default(now())
   ETA                 DateTime @db.Date @default(now())
-  note                String
+  rev                 String   @default("00")
+  note                String   
   items               Json
   createdAt           DateTime @default(now())
   updatedAt           DateTime @default(now()) @updatedAt

@@ -59,15 +59,15 @@ function ContactForm({ customers, isEdit = false, info = undefined }) {
 
   return (
     <FormBox action={formAction} type="secondary">
+      {isEdit && (
+        <Input
+          name="contactId"
+          type="hidden"
+          isPending={isPending}
+          defaultValue={info.id}
+        />
+      )}
       <FormRow label="transportation mode">
-        {isEdit && (
-          <Input
-            name="contactId"
-            type="hidden"
-            isPending={isPending}
-            defaultValue={info.id}
-          />
-        )}
         <Select
           key={
             "transportationMode" + initialTransportationMode + initialCustomer

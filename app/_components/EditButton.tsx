@@ -1,4 +1,4 @@
-import { FaEdit } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
 import Button from "./Button";
 
 function EditButton({ onClick }) {
@@ -10,7 +10,7 @@ function EditButton({ onClick }) {
       onClick={onClick}
     >
       <span>
-        <FaEdit />
+        <AiFillEdit />
       </span>
       <span>Edit</span>
     </Button>

@@ -126,6 +126,7 @@ export const purchaseOrderSchema = z.object({
   status: z.string(),
   loading: z.string(),
   ETA: z.string(),
+  rev: z.string(),
   note: z.string(),
   itemList: z.string(),
 });

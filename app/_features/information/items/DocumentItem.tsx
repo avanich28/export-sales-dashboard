@@ -11,7 +11,6 @@ function DocumentItem({ info }) {
   return (
     <>
       <td className="font-semibold">{customerCompany}</td>
-      {/* FIXME Change to object.map and add uppercase (BL Form COO) in form */}
       <td>
         <Container type="table" addClassName="my-1">
           {courier.map((doc) => (

@@ -1,25 +1,34 @@
 "use client";
 
 import KebabMenu from "@/app/_components/KebabMenu";
-import Modal from "@/app/_components/Modal";
 import { deleteItem } from "@/app/_lib/actions";
-import { formatDateToDDMMYY } from "@/app/_utils/constants";
-import { triggerToast } from "@/app/_utils/helpers";
-import ItemListModal from "./ItemListModal";
 
-function SalesItem({ customers, order }) {
+import { formatDateToDDMMYY, triggerToast } from "@/app/_utils/helpers";
+import ItemDetailModal from "./ItemDetailModal";
+
+function SalesItem({ order }) {
   const {
     id,
     purchaseOrderNumber,
-    customer,
+    customer: { customerCompany },
     portOfUnload,
     status,
     total,
     loading,
     ETA,
+    rev,
     note,
     items,
   } = order;
+
+  const href = `/main/sales/${id}`;
+
+  const detail = {
+    customer: customerCompany,
+    ETA: formatDateToDDMMYY(ETA),
+    rev,
+    note,
+  };
 
   async function handlePurchaseOrderItemDelete() {
     const path = "/sales";
@@ -31,24 +40,15 @@ function SalesItem({ customers, order }) {
   return (
     <>
       <td>
-        <Modal>
-          <Modal.Open opens="itemList">
-            <button className="hover:text-hover cursor-pointer primaryTransition">
-              {purchaseOrderNumber}
-            </button>
-          </Modal.Open>
-          <Modal.Window name="itemList">
-            <ItemListModal
-              purchaseOrderNumber={purchaseOrderNumber}
-              customer={customer.customerCompany}
-              ETA={formatDateToDDMMYY(ETA)}
-              note={note}
-              items={JSON.parse(items)}
-            />
-          </Modal.Window>
-        </Modal>
+        <ItemDetailModal
+          href={href}
+          modalName="orderDetail"
+          purchaseOrderNumber={purchaseOrderNumber}
+          detail={detail}
+          items={JSON.parse(items)}
+        />
       </td>
-      <td>{customer.customerCompany}</td>
+      <td>{customerCompany}</td>
       <td>{portOfUnload}</td>
       <td>{status}</td>
       <td>{total}</td>
@@ -56,7 +56,7 @@ function SalesItem({ customers, order }) {
       <td>{formatDateToDDMMYY(ETA)}</td>
       <td>
         <KebabMenu
-          href={`/main/sales/${id}`}
+          href={href}
           handleDelete={async () => await handlePurchaseOrderItemDelete()}
           hasModal={false}
         />

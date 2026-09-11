@@ -3,11 +3,11 @@
 import { allInformationPages } from "@/app/_features/information/constants";
 import {
   AUTH_ERROR_MESSAGE,
-  convertDateStringToUTC,
   SUCCESS_CREATED_DATA_MESSAGE,
   SUCCESS_DELETED_DATA_MESSAGE,
 } from "@/app/_utils/constants";
 import {
+  convertDateStringToUTC,
   convertToCapitalize,
   getCustomerId,
   getRawData,
@@ -747,5 +747,63 @@ export async function addAndUpdatePurchaseOrder(
 
   // 6) Reload
   revalidatePath(`/main/sales/add-order`);
+  return { error: false, message: SUCCESS_CREATED_DATA_MESSAGE };
+}
+
+export async function updateShipmentSchedule(
+  prevState: FormError,
+  formData: FormData,
+): Promise<FormError> {
+  // 1) Authentication
+  const session = await auth();
+  if (!session) throw new Error(AUTH_ERROR_MESSAGE);
+
+  // 2) Validate Data
+  const rawData = getRawData(formData);
+  const validateData = purchaseOrderSchema.safeParse(rawData);
+
+  if (!validateData.success)
+    return { error: true, message: "Validation failed!" };
+
+  const {
+    purchaseOrderNumber,
+    // NOTE id customer, not string
+    customer,
+    portOfUnload,
+    status,
+    loading,
+    ETA,
+    note,
+    itemList,
+  } = validateData.data;
+
+  try {
+    // 3) Update data
+    await prisma.purchaseOrder.update({
+      where: { id: Number(rawData.purchaseOrderId) },
+      data: {
+        purchaseOrderNumber,
+        customerId: Number(customer),
+        portOfUnload,
+        ETA: convertDateStringToUTC(ETA),
+        note,
+        items: itemList,
+        status,
+        loading: convertDateStringToUTC(loading),
+        updatedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    // console.error(error.stack);
+    // 5) Error Handling
+    return {
+      error: true,
+      message: "Shipment schedule could not be updated!",
+    };
+  }
+
+  // 6) Reload
+  revalidatePath(`/main/shipment-schedule`);
   return { error: false, message: SUCCESS_CREATED_DATA_MESSAGE };
 }

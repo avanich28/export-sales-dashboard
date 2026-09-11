@@ -42,7 +42,11 @@ export function getCustomerId(customer: string): number {
   return Number(customer.split("-")[0]);
 }
 
-export function monthAbbrToNumber(monthAbbr = "mar") {
+export function convertCustomerSelectValueStr(id, company) {
+  return `${id}-${company.toLowerCase().split(" ").join("-")}`;
+}
+
+export function monthAbbrToNumber(monthAbbr) {
   const date = new Date(`${monthAbbr} 1, 2026`);
   return date.getMonth();
 }
@@ -51,6 +55,50 @@ export function convertFullDateToYYYYMMDD(date) {
   return date.toLocaleDateString("en-CA");
 }
 
-export function convertCustomerSelectValueStr(id, company) {
-  return `${id}-${company.toLowerCase().split(" ").join("-")}`;
+export function formatDateToDDMMYY(date) {
+  const day = date.getDate().toString();
+  const month = date.toLocaleString("en-US", { month: "short" });
+  const year = date.getFullYear().toString().slice(-2);
+
+  return `${day} ${month} ${year}`;
+}
+
+export function getDaysInMonth(year, month) {
+  // month is 0-indexed (0 = January)
+  const dayInMonth = new Date(year, month + 1, 0).getDate();
+  const days = [];
+
+  for (let day = 1; day <= dayInMonth; day++) {
+    days.push(new Date(year, month, day).toDateString());
+  }
+
+  return days;
+}
+
+export function convertDateStringToUTC(date) {
+  const [year, month, day] = date.split("-");
+  const utcDate = new Date(Date.UTC(year, month - 1, day));
+
+  return utcDate;
+}
+
+export function createQueryString(
+  curSearchParams,
+  name: string,
+  value: string,
+): string {
+  // Current params
+  const params = new URLSearchParams(curSearchParams.toString());
+  // Change to obj
+  const queries = {
+    ...Object.fromEntries(params.entries()),
+    [name]: value,
+  };
+
+  Object.entries(queries).forEach(([key, value]) => {
+    if (value === null) params.delete(key);
+    else params.set(key, value);
+  });
+
+  return params.toString();
 }

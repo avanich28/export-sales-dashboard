@@ -12,13 +12,13 @@ async function Page({ searchParams }) {
   const customers = await getAllCustomers(true);
 
   return (
-    <main className="h-full flex flex-col gap-3">
+    <div className="h-full flex flex-col gap-3">
       <header>
         <Heading>Sales</Heading>
         <SalesOperation customers={customers} />
       </header>
-      <SalesLists customers={customers} query={query} />
-    </main>
+      <SalesLists query={query} />
+    </div>
   );
 }
 
